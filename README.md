@@ -1,6 +1,7 @@
 # Introduction
-This java utility convert csv, tsv, text files to excel (xlsx). I created this to convert biological data (DE results, gene lists etc.) from txt format to excel.
-This automatically takes care of gene names without converting them to dates.
+This java utility convert/merge multiple csv, tsv, text files to excel (xlsx) files. I created this to convert biological data (DE results, gene lists etc.) from txt format to excel.
+
+**This automatically takes care of gene names without converting them to dates.**
 
 ### Key Features:
 
