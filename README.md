@@ -16,4 +16,4 @@ This java utility convert/merge multiple csv, tsv, text files to excel (xlsx) fi
 * Works with Linux, Windows, and Mac
 
 ## Installation
-Download the latest [release](https://github.com/urmi-21/csvtoxl/releases) and double click to run.
+Download the latest [release](https://github.com/urmi-21/csvtoxl/releases/latest) and double click on the .jar file to run.
