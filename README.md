@@ -8,7 +8,7 @@ This automatically takes care of gene names without converting them to dates.
 * Supports multiple files
 * Auto-detect delimiter for each input file
 * Outputs can be single or multiple XLSX files, as specified by user.
-* Files never leave the users computer
+* Files never leave the user's computer
 * Works with Linux, Windows, and Mac
 
 ## Installation
