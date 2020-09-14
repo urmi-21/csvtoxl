@@ -7,8 +7,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
-public class Main {
-	
+public class MainFrame {
+
 	public static void main(String[] args) throws UnsupportedLookAndFeelException {
 		UIManager.setLookAndFeel(new FlatLightLaf());
 		
@@ -23,4 +23,5 @@ public class Main {
 			}
 		});
 	}
+
 }
