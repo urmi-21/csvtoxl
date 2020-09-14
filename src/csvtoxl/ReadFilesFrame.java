@@ -4,8 +4,13 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
+import java.awt.Color;
+
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FilenameUtils;
@@ -36,16 +41,23 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.awt.event.ActionEvent;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class ReadFilesFrame {
 
 	private JFrame frame;
-	private Set<File> selectedfiles = new HashSet<>();
+	private Set<File> selectedfiles = new TreeSet<>();
+	
 	JPanel added_files_panel = new JPanel();
+	JScrollPane scrollPane=new JScrollPane(added_files_panel,   ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	JCheckBox chckbxWriteToSingle = new JCheckBox("Write to single xlsx");
+	JButton btnConvert = new JButton("Convert");
+	JLabel statusString=new JLabel();
 
 	/**
 	 * Launch the application.
@@ -69,6 +81,10 @@ public class ReadFilesFrame {
 	public ReadFilesFrame() {
 		initialize();
 	}
+	
+	public JFrame getFrame() {
+		return frame;
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -78,13 +94,15 @@ public class ReadFilesFrame {
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		frame.setTitle("csvtoxl");
 
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.NORTH);
 
-		JLabel lblBrowseFiles = new JLabel("Browse files");
+		JLabel lblBrowseFiles = new JLabel("Add files");
 		panel.add(lblBrowseFiles);
-
+		
+		
 		JButton btnSelectFiles = new JButton("Select files...");
 		btnSelectFiles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -102,13 +120,28 @@ public class ReadFilesFrame {
 			}
 		});
 		panel.add(btnSelectFiles);
+		
+		
+		JSeparator s = new JSeparator(); 
+        // set layout as vertical 
+        s.setOrientation(SwingConstants.VERTICAL); 
+        panel.add(s);
+		JLabel lblStatus = new JLabel("Status:");
+		panel.add(lblStatus);
+		statusString = new JLabel("idle");
+		statusString.setForeground(Color.BLUE);
+		statusString.setFont(new Font("Tahoma", Font.BOLD, 13));
+		panel.add(statusString);
+		
 
 		JPanel panel_1 = new JPanel();
 		frame.getContentPane().add(panel_1, BorderLayout.SOUTH);
 
 		panel_1.add(chckbxWriteToSingle);
 
-		JButton btnConvert = new JButton("Convert");
+		
+		btnConvert.setBackground(Color.GREEN);
+		btnConvert.setOpaque(true);
 		btnConvert.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// read files and convert to xlsx
@@ -122,10 +155,16 @@ public class ReadFilesFrame {
 		panel_2.setLayout(new BorderLayout(0, 0));
 
 		JLabel lblAddedFiles = new JLabel("Added files:");
+		lblAddedFiles.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAddedFiles.setFont(new Font("Tahoma", Font.BOLD, 13));
 		panel_2.add(lblAddedFiles, BorderLayout.NORTH);
 
-		panel_2.add(added_files_panel, BorderLayout.CENTER);
+		//panel_2.add(added_files_panel, BorderLayout.CENTER);
 		added_files_panel.setLayout(new BoxLayout(added_files_panel, BoxLayout.Y_AXIS));
+		//frameConstraints.gridx = 0;
+	    //frameConstraints.gridy = 1;
+	    //frameConstraints.weighty = 1;
+	    panel_2.add(scrollPane);
 	}
 
 	/**
@@ -135,6 +174,8 @@ public class ReadFilesFrame {
 		added_files_panel.removeAll();
 		added_files_panel.revalidate();
 		added_files_panel.repaint();
+		//sort by name
+		
 		for (File f : selectedfiles) {
 			// JOptionPane.showMessageDialog(null, f.getPath());
 			// add this panel to frame panel
@@ -184,8 +225,17 @@ public class ReadFilesFrame {
 	}
 
 	private void convertSelectedFiles(boolean combine) {
+		updateStatus("busy...");
+		btnConvert.setEnabled(false);
+		btnConvert.setText("Working...");
+		btnConvert.setBackground(Color.RED);
+		btnConvert.setOpaque(true);
+		btnConvert.validate();
+		btnConvert.repaint();
+		getFrame().validate();
+		getFrame().repaint();
+		
 		if (combine) {
-
 			JFrame parentFrame = new JFrame();
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setDialogTitle("Specify out file name");
@@ -194,20 +244,25 @@ public class ReadFilesFrame {
 			if (userSelection == JFileChooser.APPROVE_OPTION) {
 				destination = fileChooser.getSelectedFile();
 			}
-
-			// just show something
-			for (File f : selectedfiles) {
-				final String fdest = destination.getAbsolutePath();
-				saveWorkbook(createWorkbook(selectedfiles), fdest);
-			}
+			saveWorkbook(createWorkbook(selectedfiles), destination.getAbsolutePath());
 
 		} else {
 			for (File f : selectedfiles) {
 				String destination = FilenameUtils.removeExtension(f.getAbsolutePath());
 				saveWorkbook(createWorkbook(f), destination);
 			}
-
 		}
+		
+		//after conversion
+		updateStatus("idle");
+		btnConvert.setEnabled(true);
+		btnConvert.setText("Convert...");
+		btnConvert.setBackground(Color.GREEN);
+		btnConvert.setOpaque(true);
+		btnConvert.validate();
+		btnConvert.repaint();
+		getFrame().validate();
+		getFrame().repaint();
 
 	}
 
@@ -218,6 +273,7 @@ public class ReadFilesFrame {
 			destination = destination + ".xlsx";
 		}
 		try {
+			updateStatus("Saving "+destination+" ...");
 			out = new FileOutputStream(destination);
 			workBook.write(out);
 			out.close();
@@ -255,6 +311,8 @@ public class ReadFilesFrame {
 
 		for (File f : fileset) {
 			String sheetName = FilenameUtils.getBaseName(f.getAbsolutePath());
+			//update status
+			updateStatus("Processing: "+sheetName);
 			CsvParserSettings settings = new CsvParserSettings();
 			settings.detectFormatAutomatically();
 			CsvParser parser = new CsvParser(settings);
@@ -294,6 +352,16 @@ public class ReadFilesFrame {
 		return workBook;
 
 	}
+	
+	
+	private void updateStatus(String message) {
+		statusString.setText(message);
+		statusString.validate();
+		statusString.repaint();
+		getFrame().validate();
+		getFrame().repaint();
+	}
+	
 
 }
 
