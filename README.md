@@ -1,3 +1,4 @@
+[![download](https://img.shields.io/badge/%E2%86%93-Download%20Latest%20Version-success)](https://github.com/urmi-21/csvtoxl/releases)
 ![GitHub All Releases](https://img.shields.io/github/downloads/urmi-21/csvtoxl/total?label=GitHub%20downloads&style=flat-square)
 
 # Introduction
