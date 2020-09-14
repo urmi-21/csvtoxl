@@ -1,3 +1,5 @@
+![GitHub All Releases](https://img.shields.io/github/downloads/urmi-21/csvtoxl/total?label=GitHub%20downloads&style=flat-square)
+
 # Introduction
 This java utility convert/merge multiple csv, tsv, text files to excel (xlsx) files. I created this to convert biological data (DE results, gene lists etc.) from txt format to excel.
 
