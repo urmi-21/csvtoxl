@@ -11,4 +11,4 @@ This automatically takes care of gene names without converting them to dates.
 * Works with Linux, Windows, and Mac
 
 ## Installation
-Download the latest release and double click to run.
+Download the latest [release](https://github.com/urmi-21/csvtoxl/releases) and double click to run.
