@@ -14,6 +14,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -299,15 +300,17 @@ public class ReadFilesFrame {
 			workBook.write(out);
 			out.close();
 			workBook.close();
-			showMessage("File saved to: " + destination, "File saved",JOptionPane.INFORMATION_MESSAGE);
-			//JOptionPane.showMessageDialog(null, "File saved to: " + destination, "File saved",JOptionPane.INFORMATION_MESSAGE);
+			showMessage("File saved to: " + destination, "File saved", JOptionPane.INFORMATION_MESSAGE);
+			// JOptionPane.showMessageDialog(null, "File saved to: " + destination, "File
+			// saved",JOptionPane.INFORMATION_MESSAGE);
 			// dispose of temporary files
 			workBook.dispose();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-			showMessage("File saved to: " + destination, "File saved",JOptionPane.ERROR_MESSAGE);
-			//JOptionPane.showMessageDialog(null, "Error in saving file: " + destination, "Error",JOptionPane.ERROR_MESSAGE);
+			showMessage("File saved to: " + destination, "File saved", JOptionPane.ERROR_MESSAGE);
+			// JOptionPane.showMessageDialog(null, "Error in saving file: " + destination,
+			// "Error",JOptionPane.ERROR_MESSAGE);
 			// dispose of temporary files
 			workBook.dispose();
 			return false;
@@ -362,7 +365,13 @@ public class ReadFilesFrame {
 				for (String colval : csvrow) {
 
 					cell = row.createCell(colIndex);
-					cell.setCellValue(colval);
+					// check if col is number
+					if (NumberUtils.isCreatable(colval)) {
+						double numberVal=NumberUtils.toFloat(colval);
+						cell.setCellValue(numberVal);
+					} else {
+						cell.setCellValue(colval);
+					}
 					if (rowIndex == 0) {
 						cell.setCellStyle(headerCellStyle);
 					}
@@ -388,10 +397,10 @@ public class ReadFilesFrame {
 		getFrame().repaint();
 	}
 
-	private void showMessage(String message,String title,int type) {
+	private void showMessage(String message, String title, int type) {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
-				JOptionPane.showMessageDialog(getFrame(), message,title,type);
+				JOptionPane.showMessageDialog(getFrame(), message, title, type);
 			}
 		});
 		t.start();
