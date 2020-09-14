@@ -101,6 +101,7 @@ public class ReadFilesFrame {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 		frame.setTitle("csvtoxl");
+		frame.setSize(800, 600);
 
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel, BorderLayout.NORTH);
@@ -125,8 +126,8 @@ public class ReadFilesFrame {
 			}
 		});
 		panel.add(btnSelectFiles);
-		
-		//button to remove all files
+
+		// button to remove all files
 		JButton btnRemoveAllFiles = new JButton("Remove all files");
 		btnRemoveAllFiles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -298,15 +299,15 @@ public class ReadFilesFrame {
 			workBook.write(out);
 			out.close();
 			workBook.close();
-			JOptionPane.showMessageDialog(null, "File saved to: " + destination, "File saved",
-					JOptionPane.INFORMATION_MESSAGE);
+			showMessage("File saved to: " + destination, "File saved",JOptionPane.INFORMATION_MESSAGE);
+			//JOptionPane.showMessageDialog(null, "File saved to: " + destination, "File saved",JOptionPane.INFORMATION_MESSAGE);
 			// dispose of temporary files
 			workBook.dispose();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error in saving file: " + destination, "Error",
-					JOptionPane.ERROR_MESSAGE);
+			showMessage("File saved to: " + destination, "File saved",JOptionPane.ERROR_MESSAGE);
+			//JOptionPane.showMessageDialog(null, "Error in saving file: " + destination, "Error",JOptionPane.ERROR_MESSAGE);
 			// dispose of temporary files
 			workBook.dispose();
 			return false;
@@ -379,11 +380,21 @@ public class ReadFilesFrame {
 	}
 
 	private void updateStatus(String message) {
+		// JOptionPane.showConfirmDialog(null, message);
 		statusString.setText(message);
 		statusString.validate();
 		statusString.repaint();
 		getFrame().validate();
 		getFrame().repaint();
+	}
+
+	private void showMessage(String message,String title,int type) {
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				JOptionPane.showMessageDialog(getFrame(), message,title,type);
+			}
+		});
+		t.start();
 	}
 
 }
