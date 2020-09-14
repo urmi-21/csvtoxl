@@ -125,7 +125,8 @@ public class ReadFilesFrame {
 			}
 		});
 		panel.add(btnSelectFiles);
-
+		
+		//button to remove all files
 		JButton btnRemoveAllFiles = new JButton("Remove all files");
 		btnRemoveAllFiles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
